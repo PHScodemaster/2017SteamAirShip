@@ -37,10 +37,17 @@ public class DriveToBoiler extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	Robot.camera.initThreadToTargetBoiler();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        double turn = Robot.camera.getTurn();
+        double x = 0;
+        double y = 0;
+        double z = 0;
+        double angle = 0;
+        Robot.drive.mecanumDrive(x, y, z, angle);
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -50,6 +57,7 @@ public class DriveToBoiler extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+    	Robot.camera.killThreadToTargetBoiler();
     }
 
     // Called when another command which requires one or more of the same
