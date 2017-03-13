@@ -50,7 +50,7 @@ public class Camera extends Subsystem {
     private static final int IMG_WIDTH = 320;
     private static final int IMG_HEIGHT = 240;
 
-	Thread visionThread;
+  	Thread visionThread;
     private double centerX = 0.0;
 
     private final Object imgLock = new Object();
@@ -68,7 +68,7 @@ public class Camera extends Subsystem {
         // Set the default command for a subsystem here.
         // setDefaultCommand(new MySpecialCommand());
     }
-    
+ 
     /**
      * Pipeline processing comes from the wpilib tutorial, modified slightly to
      * fit into the Camera subsystem.  It is assumed that the GRIP processing for
@@ -80,13 +80,13 @@ public class Camera extends Subsystem {
      * was exported with the option to implement the WPILIB Vision Pipeline.
      */
     
-    public void initThreadToTargetLift() {
-    	
-        UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-        camera.setResolution(IMG_WIDTH, IMG_HEIGHT);
-
+     public void initThreadToTargetLift() {
+     	
+         UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+         camera.setResolution(IMG_WIDTH, IMG_HEIGHT);
+  
         visionThread = new VisionThread(camera, 
-        		new TargetLift(), 
+       		new TargetLift(), 
         		pipeline -> {
              if (!pipeline.filterContoursOutput().isEmpty()) {
                   Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
@@ -112,7 +112,7 @@ public class Camera extends Subsystem {
     	
         UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
         camera.setResolution(IMG_WIDTH, IMG_HEIGHT);
-
+  
         visionThread = new VisionThread(camera, 
         		new TargetBoiler(), 
         		pipeline -> {
@@ -137,7 +137,7 @@ public class Camera extends Subsystem {
      * are separate commands that will be called sequentially in the command group.
      * @return
      */
-    
+   
     public double getTurn() {
         double centerX;
         synchronized (imgLock) {
@@ -146,4 +146,6 @@ public class Camera extends Subsystem {
         double turn = centerX - (IMG_WIDTH / 2);
         return turn;
     }
+    
+    
 }
