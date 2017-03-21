@@ -178,6 +178,10 @@ public class RobotMap {
         drivelrEncoder.setDistancePerPulse(3.5);
 		drivelrEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
         LiveWindow.addActuator("Encoder", "Left Rear", drivelrEncoder);
+        
+        driveADXRS450_Gyro = new ADXRS450_Gyro();
+        LiveWindow.addActuator("Gyro", "ADXRS450", driveADXRS450_Gyro);
+
 
     }
 }
