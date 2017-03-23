@@ -30,7 +30,7 @@ public class StrafeRight extends Command {
 	private double currentTimeMillis;
 	private double error;
 	private final double kTolerance = 0.1;
-	private final double kP = -1.0 / 5.0;
+	private final double kP = 1.0;
 	private final double kSpeedConv = 0.008; 
 	
 	public StrafeRight() {
@@ -79,12 +79,8 @@ public class StrafeRight extends Command {
         	distanceMoved = (currentTimeMillis - startTimeMillis) * strafeRightSpeed * kSpeedConv;
     		error = distance - distanceMoved;
     	}
-		if (strafeRightSpeed * kP * error >= strafeRightSpeed) {
-			Robot.drive.mecanumDrive(strafeRightSpeed, 
-					0, 0, 0);
-		} else {
-			Robot.drive.mecanumDrive(strafeRightSpeed * kP * error, 
-					0, 0, 0);
+		if (error >= 0) {
+			Robot.drive.mecanumDrive(strafeRightSpeed * kP, 0, 0, 0);
 		}
     }
 
@@ -100,6 +96,7 @@ public class StrafeRight extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+		Robot.drive.stop();
     }
 
     // Called when another command which requires one or more of the same

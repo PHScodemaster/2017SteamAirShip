@@ -27,7 +27,7 @@ public class Pivot extends Command {
 	private double pivotAngle;
 	private double error;
 	private final double kTolerance = 0.1;
-	private final double kP = -1.0 / 5.0;
+	private double kP;
 	
 	public Pivot() {
 		this(10, 0.5);
@@ -63,16 +63,19 @@ public class Pivot extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
 		error = (pivotAngle - Robot.drive.getAngle());
-		if (pivotSpeed * kP * error >= pivotSpeed) {
-			Robot.drive.mecanumDrive(0, 0, pivotSpeed, 0);
+		if (error < 0) {
+			kP = -1;
 		} else {
-			Robot.drive.mecanumDrive(0, 0, pivotSpeed * kP * error, 0);
+			kP = 1;
+		}
+		if (java.lang.Math.abs(error) >= kTolerance) {
+			Robot.drive.mecanumDrive(0, 0, pivotSpeed * kP, 0);
 		}
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    	if (error <= 0) {
+    	if (java.lang.Math.abs(error) <= kTolerance) {
     		return true;
     	}
     	else {
@@ -82,6 +85,7 @@ public class Pivot extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+    	Robot.drive.stop();
     }
 
     // Called when another command which requires one or more of the same

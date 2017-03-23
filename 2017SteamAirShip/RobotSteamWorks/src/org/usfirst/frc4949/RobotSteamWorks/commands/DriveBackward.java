@@ -30,7 +30,7 @@ public class DriveBackward extends Command {
 	private double currentTimeMillis;
 	private double error;
 	private final double kTolerance = 0.1;
-	private final double kP = -1.0 / 5.0;
+	private final double kP = -1.0;
 	private final double kSpeedConv = 0.008; 
 	
 	public DriveBackward() {
@@ -62,7 +62,7 @@ public class DriveBackward extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	error = distance;
-    	currentTimeMillis = System.currentTimeMillis();
+    	startTimeMillis = System.currentTimeMillis();
 		Robot.drive.getRightFrontEncoder().reset();
 		Robot.drive.getLeftFrontEncoder().reset();
 		Robot.drive.getRightRearEncoder().reset();
@@ -79,12 +79,8 @@ public class DriveBackward extends Command {
         	distanceMoved = (currentTimeMillis - startTimeMillis) * driveBackwardSpeed * kSpeedConv;
     		error = distance - distanceMoved;
     	}
-		if (driveBackwardSpeed * kP * error >= driveBackwardSpeed) {
-			Robot.drive.mecanumDrive(0, driveBackwardSpeed, 
-					0, 0);
-		} else {
-			Robot.drive.mecanumDrive(0, driveBackwardSpeed * kP * error, 
-					0, 0);
+		if (error >= 0) {
+			Robot.drive.mecanumDrive(0, driveBackwardSpeed * kP, 0, 0);
 		}
     }
 
@@ -100,6 +96,7 @@ public class DriveBackward extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+		Robot.drive.stop();
     }
 
     // Called when another command which requires one or more of the same

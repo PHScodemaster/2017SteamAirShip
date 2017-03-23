@@ -30,7 +30,7 @@ public class StrafeLeft extends Command {
 	private double currentTimeMillis;
 	private double error;
 	private final double kTolerance = 0.1;
-	private final double kP = -1.0 / 5.0;
+	private final double kP = -1.0;
 	private final double kSpeedConv = 0.008; 
 	
 	public StrafeLeft() {
@@ -63,7 +63,7 @@ public class StrafeLeft extends Command {
     // Called just before this Command runs the first time
     protected void initialize() {
     	error = distance;
-    	currentTimeMillis = System.currentTimeMillis();
+    	startTimeMillis = System.currentTimeMillis();
 		Robot.drive.getRightFrontEncoder().reset();
 		Robot.drive.getLeftFrontEncoder().reset();
 		Robot.drive.getRightRearEncoder().reset();
@@ -80,12 +80,8 @@ public class StrafeLeft extends Command {
         	distanceMoved = (currentTimeMillis - startTimeMillis) * strafeLeftSpeed * kSpeedConv;
     		error = distance - distanceMoved;
     	}
-		if (strafeLeftSpeed * kP * error >= strafeLeftSpeed) {
-			Robot.drive.mecanumDrive(strafeLeftSpeed, 
-					0, 0, 0);
-		} else {
-			Robot.drive.mecanumDrive(strafeLeftSpeed * kP * error, 
-					0, 0, 0);
+		if (error >= 0) {
+			Robot.drive.mecanumDrive(strafeLeftSpeed * kP, 0, 0, 0);
 		}
     }
 
@@ -101,6 +97,7 @@ public class StrafeLeft extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+		Robot.drive.stop();
     }
 
     // Called when another command which requires one or more of the same
