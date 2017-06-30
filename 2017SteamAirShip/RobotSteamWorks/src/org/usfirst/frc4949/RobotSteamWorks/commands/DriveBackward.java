@@ -29,8 +29,13 @@ public class DriveBackward extends Command {
 	private double startTimeMillis;
 	private double currentTimeMillis;
 	private double error;
+	private double angle;
+	private double xAxis;
+	private double yAxis;
+	private double zAxis;
 	private final double kTolerance = 0.1;
 	private final double kP = -1.0;
+	private final double kPivot = 0.03;
 	private final double kSpeedConv = 0.008; 
 	
 	public DriveBackward() {
@@ -72,6 +77,8 @@ public class DriveBackward extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        angle = Robot.drive.getAngle();  // get current heading
+
     	if (Robot.hasEncoders) {
     		error = (distance - Robot.drive.getRightFrontEncoder().getDistance());
     	} else {
@@ -79,9 +86,15 @@ public class DriveBackward extends Command {
         	distanceMoved = (currentTimeMillis - startTimeMillis) * driveBackwardSpeed * kSpeedConv;
     		error = distance - distanceMoved;
     	}
+    	
+        xAxis = 0;                        // push drive to target line, if known
+        yAxis = driveBackwardSpeed * kP;  // push drive towards target
+        zAxis = -angle * kPivot;          // push drive towards heading 0
+        
 		if (error >= 0) {
-			Robot.drive.mecanumDrive(0, driveBackwardSpeed * kP, 0, 0);
+			Robot.drive.mecanumDrive(xAxis, yAxis, zAxis, 0);
 		}
+		
     }
 
     // Make this return true when this Command no longer needs to run execute()

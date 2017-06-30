@@ -26,11 +26,16 @@ public class DriveForward extends Command {
 	private double driveForwardSpeed;
 	private double distance;
 	private double distanceMoved;
-	private double startTimeMillis;
-	private double currentTimeMillis;
+	private long startTimeMillis;
+	private long currentTimeMillis;
 	private double error;
+	private double angle;
+	private double xAxis;
+	private double yAxis;
+	private double zAxis;
 	private final double kTolerance = 0.1;
-	private final double kP = -1.0 / 5.0;
+	private final double kP = 1.0;
+	private final double kPivot = 0.03;
 	private final double kSpeedConv = 0.008; 
 	
 	public DriveForward() {
@@ -72,6 +77,8 @@ public class DriveForward extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        angle = Robot.drive.getAngle();  // get current heading
+
     	if (Robot.hasEncoders) {
     		error = (distance - Robot.drive.getRightFrontEncoder().getDistance());
     	} else {
@@ -79,13 +86,15 @@ public class DriveForward extends Command {
         	distanceMoved = (currentTimeMillis - startTimeMillis) * driveForwardSpeed * kSpeedConv;
     		error = distance - distanceMoved;
     	}
-		if (driveForwardSpeed * kP * error >= driveForwardSpeed) {
-			Robot.drive.mecanumDrive(0, driveForwardSpeed, 
-					0, 0);
-		} else {
-			Robot.drive.mecanumDrive(0, driveForwardSpeed * kP * error, 
-					0, 0);
+    	
+        xAxis = 0;                       // push drive to target line, if known
+        yAxis = driveForwardSpeed * kP;  // push drive towards target
+        zAxis = -angle * kPivot;         // push drive towards heading 0
+        
+		if (error >= 0) {
+			Robot.drive.mecanumDrive( xAxis, yAxis, zAxis, 0);
 		}
+		
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -100,6 +109,7 @@ public class DriveForward extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+    	Robot.drive.stop();
     }
 
     // Called when another command which requires one or more of the same

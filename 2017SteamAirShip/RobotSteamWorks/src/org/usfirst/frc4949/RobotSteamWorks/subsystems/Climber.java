@@ -12,9 +12,7 @@
 package org.usfirst.frc4949.RobotSteamWorks.subsystems;
 
 import org.usfirst.frc4949.RobotSteamWorks.RobotMap;
-import org.usfirst.frc4949.RobotSteamWorks.commands.*;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Talon;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -45,6 +43,14 @@ public class Climber extends Subsystem {
 
         // Set the default command for a subsystem here.
         // setDefaultCommand(new MySpecialCommand());
+    }
+    
+    public void setSpeed( double speed ) {
+    	winchMotor.set( speed );
+    }
+    
+    public void stop() {
+    	winchMotor.set( 0 );
     }
 }
 

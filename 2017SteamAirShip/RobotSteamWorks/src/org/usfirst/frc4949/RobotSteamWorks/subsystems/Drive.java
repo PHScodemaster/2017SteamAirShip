@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Ultrasonic;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -53,7 +54,7 @@ public class Drive extends Subsystem {
     private final Counter rrEncoder = RobotMap.driverrEncoder;
     private final Counter lfEncoder = RobotMap.drivelfEncoder;
     private final Counter lrEncoder = RobotMap.drivelrEncoder;
-
+    private final Ultrasonic rangeFinder = RobotMap.driveRangeFinder;
 
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
@@ -133,5 +134,15 @@ public class Drive extends Subsystem {
 	public double getAngle() {
 		return spiGyro.getAngle();
 	}
+	
+	public void setRangeFinderMode() {
+    	rangeFinder.setAutomaticMode(true); // turns on automatic mode
+
+	}
+	
+    public double ultrasonicSample() {
+    	return rangeFinder.getRangeMM(); // reads the range on the ultrasonic sensor
+    }
+	
 }
 
